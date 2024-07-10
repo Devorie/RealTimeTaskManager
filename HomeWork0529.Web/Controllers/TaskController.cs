@@ -3,31 +3,31 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.SignalR;
-using System;
 
 namespace HomeWork0529.Web.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class TaskItemsController : ControllerBase
+    public class TaskController : ControllerBase
     {
         private readonly string _connectionString;
 
         private readonly IHubContext<TaskItemHub> _hub;
 
-        public TaskItemsController(IConfiguration configuration, IHubContext<TaskItemHub> hub)
+        public TaskController(IConfiguration configuration, IHubContext<TaskItemHub> hub)
         {
             _connectionString = configuration.GetConnectionString("ConStr");
             _hub = hub;
         }
 
-        [HttpPost]
+        [HttpGet]
         [Route("getall")]
-        public void GetAll(TaskItem taskItem)
+        public List<TaskItem> GetAll(TaskItem taskItem)
         {
+            Console.WriteLine("getting all of the tasks for you");
             var repo = new TaskRepository(_connectionString);
-            repo.GetAll();
-            _hub.Clients.All.SendAsync("newTaskReceived", taskItem);
+            return repo.GetAll();
+
         }
 
         [HttpPost]
@@ -37,17 +37,17 @@ namespace HomeWork0529.Web.Controllers
             var user = GetCurrentUser();
             var repo = new TaskRepository(_connectionString);
             repo.Add(taskItem);
+            _hub.Clients.All.SendAsync("newTaskReceived", taskItem);
         }
 
         [HttpPost]
-        [Authorize]
         [Route("updatestatus")]
         public void UpdateStatus(int id)
         {
             var user = GetCurrentUser();
             var repo = new TaskRepository(_connectionString);
-            repo.UpdateStatus($"{user.FirstName} {user.LastName} is doing this", id, user.Id);
-            _hub.Clients.All.SendAsync("statusUpdate", $"{user.FirstName} {user.LastName} is doing this", user.Id, id);
+            var tItem = repo.UpdateStatus($"{user.FirstName} {user.LastName} is doing this", id, user.Id);
+            _hub.Clients.All.SendAsync("statusUpdate", tItem);
         }
 
         [HttpPost]
@@ -65,5 +65,6 @@ namespace HomeWork0529.Web.Controllers
             var user = userRepo.GetByEmail(User.Identity.Name);
             return user;
         }
+
     }
 }

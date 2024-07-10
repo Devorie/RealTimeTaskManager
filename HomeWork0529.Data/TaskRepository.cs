@@ -18,6 +18,7 @@ namespace HomeWork0529.Data
 
         public List<TaskItem> GetAll()
         {
+            Console.WriteLine("in function");
             using var context = new TasksDataContext(_connectionString);
             return context.TaskItems.ToList();
         }
@@ -29,10 +30,11 @@ namespace HomeWork0529.Data
             context.SaveChanges();
         }
 
-        public void UpdateStatus(string status, int id, int userId)
+        public TaskItem UpdateStatus(string status, int id, int userId)
         {
             using var context = new TasksDataContext(_connectionString);
             context.Database.ExecuteSqlInterpolated($"UPDATE TaskItems SET Status = {status}, UserID = {userId} WHERE Id = {id}");
+            return context.TaskItems.FirstOrDefault(t => t.Id == id);
         }
 
         public void DeleteTask(int id)

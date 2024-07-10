@@ -43,7 +43,7 @@ public class Program
         app.UseAuthentication();
         app.UseAuthorization();
 
-        app.MapHub<TaskItemHub>("/api/taskitem");
+        app.MapHub<TaskItemHub>("/api/taskitems");
 
 
         app.MapControllerRoute(

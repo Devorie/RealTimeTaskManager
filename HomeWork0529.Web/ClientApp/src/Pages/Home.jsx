@@ -1,24 +1,26 @@
-import React, { useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
+import { useAuth } from '../AuthContext';
+import { HubConnectionBuilder } from "@microsoft/signalr";
+
 
 const Home = () => {
 
+    const { user } = useAuth();
     const navigate = useNavigate();
     const [taskItem, setTaskItem] = useState('');
     const [allTasks, setAllTasks] = useState([]);
-
+    
     const connectionRef = useRef();
 
     useEffect(() => {
+        const loadTasks = async () => {
+            const { data } = await axios.get('/api/task/getall');
+            setAllTasks(data);
+        }
         const connectToHub = async () => {
-
-            const loadTasks = async () => {
-                const { data } = await axios.get('/api/taskitems/getall');
-                setAllTasks(data);
-            }
-
-            const connection = new HubConnectionBuilder().withUrl("/api/taksitem").build();
+            const connection = new HubConnectionBuilder().withUrl("/api/taskitems").build();
             await connection.start();
             connectionRef.current = connection;
 
@@ -30,43 +32,45 @@ const Home = () => {
                 setAllMessages(items => items.filter(i => i.id !== id));
             });
 
-            connection.on('statusUpdate', s, userId, id => {
+            connection.on('statusUpdate', tItem => {
                 setAllMessages(items => items.map(item =>
-                    item.id === id ? { ...item, status: s, userId } : item
+                    item.id === id ? { tItem } : item
                 ))});
         }
-        loadTasks();
         connectToHub();
+        loadTasks();
     }, []);
 
     const onAddClick = async () => {
-        await axios.post('/api/taskitem/add', taskItem);
+        console.log(taskItem);
+        await axios.post('/api/task/add', taskItem);
         setTaskItem('');
     }
 
     const onUpdateStatusClick = async (id) => {
-        await axios.post('/api/taskitem/updatestatus');
+        await axios.post('/api/task/updatestatus', id);
     }
 
     const onCompleteClick = async (id) => {
-        await axios.post('/api/taskitem/completetask');
+        await axios.post('/api/task/completetask', id);
     }
 
     const getButton = (t) => {
+        console.log(t)
         if (t.status == null) {
             return <button className="btn btn-dark mt-auto" onClick={() => onUpdateStatusClick(t.id)}>I'm doing this one!</button>
         }
-        if (t.userId == ) {
+        if (t.userId == user.id) {
             return <button className="btn btn-success mt-auto" onClick={() => onCompleteClick(t.id)}>I'm done!</button>
         }
-        return <button disabled className="btn btn-secondary mt-auto">{t.status}</button>
+        return <button disabled className="btn btn-secondary">{t.status}</button>
     }
     
     return (
         <div style={{ marginTop: 80 }}>
             <div className='row'>
                 <div className='col-md-10'>
-                    <input value={text} onChange={e => setTaskItem(e.target.value)} type='text' className='form-control form-control-lg' placeholder='Type a new task here...' />
+                    <input value={taskItem} onChange={e => setTaskItem(e.target.value)} type='text' className='form-control form-control-lg' placeholder='Type a new task here...' />
                 </div>
                 <div className='col-md-2'>
                     <button className='btn btn-outline-success btn-lg w-100' onClick={onAddClick}>Add</button>
