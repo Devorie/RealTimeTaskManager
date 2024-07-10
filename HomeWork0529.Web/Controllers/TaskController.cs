@@ -1,4 +1,5 @@
 ﻿using HomeWork0529.Data;
+using HomeWork0529.Web.ViewModels;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -22,9 +23,8 @@ namespace HomeWork0529.Web.Controllers
 
         [HttpGet]
         [Route("getall")]
-        public List<TaskItem> GetAll(TaskItem taskItem)
+        public List<TaskItem> GetAll()
         {
-            Console.WriteLine("getting all of the tasks for you");
             var repo = new TaskRepository(_connectionString);
             return repo.GetAll();
 
@@ -32,21 +32,27 @@ namespace HomeWork0529.Web.Controllers
 
         [HttpPost]
         [Route("add")]
-        public void Add(TaskItem taskItem)
+        public void Add(string taskItem)
         {
-            var user = GetCurrentUser();
             var repo = new TaskRepository(_connectionString);
-            repo.Add(taskItem);
-            _hub.Clients.All.SendAsync("newTaskReceived", taskItem);
+            var item =  repo.Add(taskItem);
+            _hub.Clients.All.SendAsync("newTaskReceived", item);
         }
 
         [HttpPost]
         [Route("updatestatus")]
         public void UpdateStatus(int id)
         {
+            Console.WriteLine("update status");
             var user = GetCurrentUser();
             var repo = new TaskRepository(_connectionString);
-            var tItem = repo.UpdateStatus($"{user.FirstName} {user.LastName} is doing this", id, user.Id);
+            var ti = new TaskItem
+            {
+                Id = id,
+                Status = $"{user.FirstName} {user.LastName} is doing this",
+                UserId = user.Id,
+            };
+            var tItem = repo.UpdateStatus(ti);
             _hub.Clients.All.SendAsync("statusUpdate", tItem);
         }
 

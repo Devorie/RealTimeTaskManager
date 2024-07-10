@@ -25,38 +25,35 @@ const Home = () => {
             connectionRef.current = connection;
 
             connection.on('newTaskReceived', item => {
-                setAllMessages(items => [...items, item]);
+                setAllTasks(items => [...items, item]);
             });
 
             connection.on('completedtask', id => {
-                setAllMessages(items => items.filter(i => i.id !== id));
+                setAllTasks(items => items.filter(i => i.id !== id));
             });
 
             connection.on('statusUpdate', tItem => {
-                setAllMessages(items => items.map(item =>
-                    item.id === id ? { tItem } : item
-                ))});
+                loadTasks();
+            });
         }
         connectToHub();
         loadTasks();
     }, []);
 
     const onAddClick = async () => {
-        console.log(taskItem);
-        await axios.post('/api/task/add', taskItem);
+        await axios.post(`/api/task/add?taskItem=${taskItem}`);
         setTaskItem('');
     }
 
     const onUpdateStatusClick = async (id) => {
-        await axios.post('/api/task/updatestatus', id);
+        await axios.post(`/api/task/updatestatus?id=${id}`);
     }
 
     const onCompleteClick = async (id) => {
-        await axios.post('/api/task/completetask', id);
+        await axios.post(`/api/task/completetask?id=${id}`);
     }
 
     const getButton = (t) => {
-        console.log(t)
         if (t.status == null) {
             return <button className="btn btn-dark mt-auto" onClick={() => onUpdateStatusClick(t.id)}>I'm doing this one!</button>
         }
