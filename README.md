@@ -10,8 +10,11 @@ This project focused on using eact, Entity Framework and SignalR.
 #To Run this Project:#
 Clone the github repository and save it to your local device Use the command line to navigate to the file location Run the following prompts on the command line to set up the database
 
+a >
 dotnet ef migrations add initial
 dotnet ef database update
+
 Run the following prompts on the command line to build and run the project
 
+a >
 dotnet watch run
