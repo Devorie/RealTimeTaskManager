@@ -1,4 +1,4 @@
-#Candidate Tracker#
+#Candidate Tracker
 An application that enables multiple users to add and complete tasks. This application has the standard login/signup and the home page can only be accessible to logged in users.
 
 If a given task has not been started by anyone yet, there is a button next to the task (on the table) that says "I'm doing this one". When clicked, the button should change to "I'm done", however, only for THAT user. All other users see a disabled button that says "{name of user} is doing this".
