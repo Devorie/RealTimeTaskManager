@@ -1,9 +1,13 @@
-Candidate Tracker
-An application to track potential candidates for online course registration. Users can add new candidates and update each candidate's interest level to ‘confirmed’ or ‘Refused.’ A total count of the candidates in each interest group is shown on top for a clear overview.
+#Candidate Tracker
+An application that enables multiple users to add and complete tasks. This application has the standard login/signup and the home page can only be accessible to logged in users.
 
-This project focused on using React Router, React Hooks, and React Context. It uses C# ASP.NET, Entity Framework Core, and React.
+If a given task has not been started by anyone yet, there is a button next to the task (on the table) that says "I'm doing this one". When clicked, the button should change to "I'm done", however, only for THAT user. All other users see a disabled button that says "{name of user} is doing this".
 
-To Run this Project:
+When the user that chose a task clicks on the "I'm done" button, that task disappears from the table, for ALL users.
+
+This project focused on using eact, Entity Framework and SignalR.
+
+#To Run this Project:
 Clone the github repository and save it to your local device Use the command line to navigate to the file location Run the following prompts on the command line to set up the database
 
 dotnet ef migrations add initial
