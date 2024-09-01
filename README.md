@@ -14,6 +14,11 @@ _dotnet ef migrations add initial_
 
 _dotnet ef database update_
 
+```sh
+dotnet ef migrations add initial
+dotnet ef database update
+```
+
 Run the following prompts on the command line to build and run the project
 
 _dotnet watch run_
