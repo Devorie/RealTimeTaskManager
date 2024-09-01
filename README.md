@@ -7,7 +7,7 @@ When the user that chose a task clicks on the "I'm done" button, that task disap
 
 This project focused on using React, Entity Framework and SignalR.
 
-# To Run this Project:
+## To Run this Project:
 Clone the github repository and save it to your local device Use the command line to navigate to the file location Run the following prompts on the command line to set up the database
 
 _dotnet ef migrations add initial_
