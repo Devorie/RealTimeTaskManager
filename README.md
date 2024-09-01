@@ -5,7 +5,7 @@ If a given task has not been started by anyone yet, there is a button next to th
 
 When the user that chose a task clicks on the "I'm done" button, that task disappears from the table, for ALL users.
 
-This project focused on using eact, Entity Framework and SignalR.
+This project focused on using React, Entity Framework and SignalR.
 
 # To Run this Project:
 Clone the github repository and save it to your local device Use the command line to navigate to the file location Run the following prompts on the command line to set up the database
